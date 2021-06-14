@@ -17,6 +17,7 @@ function Login({ history }) {
           .then(() => (buttonRef.current.textContent = "Login"));
         history.push("/dashboard");
       } catch (error) {
+        buttonRef.current.textContent = "Login";
         alert(error);
       }
     },
@@ -108,7 +109,6 @@ function Login({ history }) {
                 Email address
               </label>
               <input
-                // ref={emailRef}
                 id="email-address"
                 name="email"
                 type="email"
@@ -151,24 +151,6 @@ function Login({ history }) {
                 type="checkbox"
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
-              <label
-                htmlFor="remember_me"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <p className="font-medium text-gray-800">
-                Don't have account?{" "}
-                <a
-                  className="text-indigo-600 hover:text-indigo-500"
-                  href="/register"
-                >
-                  Register here
-                </a>
-              </p>
             </div>
           </div>
 

@@ -1,85 +1,86 @@
 import { useEffect, useRef, useState, Fragment, useContext } from "react";
 import "../style/buttonplus.css";
 import { Dialog, Transition } from "@headlessui/react";
-import { v4 as uuidv4 } from "uuid";
 import { authh, stokBarangRef } from "../config/firebase/firebase-app";
-import { UserContext } from "../provider/UserProvider";
+import {UserContext} from "../provider/UserProvider"
 
 function Dashboard() {
-  const { currentUser } = useContext(UserContext);
-  const ho = () => console.log(currentUser);
+  const {currentUser}= useContext(UserContext)
+  const [barangs, setBarangs] = useState([]);
+  const [isBarangsLoad, setIsbarangsLoad] = useState(false);
+  const tableRef = useRef(null);
+
   // tambah barang
   let updateStok = {};
-  const namaBarang = useRef(null);
-  const hargaBeli = useRef(null);
-  const hargaJual = useRef(null);
-  const stok = useRef(null);
-  const kategoriRef = useRef(null);
-  const inputEditBarangRef = useRef(null);
-
   const tambahBarang = (e) => {
     e.preventDefault();
+    const { namaBarang, hargaBeli, hargaJual, stok } = e.target.elements;
     console.log(e);
-    const currentNo = barangs.length;
     if (
-      namaBarang.current.value === "" ||
-      hargaBeli.current.value === "" ||
-      hargaJual.current.value === "" ||
-      stok.current.value === ""
+      namaBarang.value === "" ||
+      hargaBeli.value === "" ||
+      hargaJual.value === "" ||
+      stok.value === ""
     ) {
       alert("mohon isi semua data!");
       return;
     }
-    updateStok[currentNo + "/id"] = uuidv4();
-    updateStok[currentNo + "/nama"] = namaBarang.current.value;
-    updateStok[currentNo + "/hargaBeli"] = parseInt(hargaBeli.current.value);
-    updateStok[currentNo + "/harga"] = parseInt(hargaJual.current.value);
-    updateStok[currentNo + "/stok"] = parseInt(stok.current.value);
-    stokBarangRef.update(updateStok, (error) => {
-      if (error) {
-        alert(error);
-      } else {
-        closeModal();
-        console.log("data saved successfully!");
+    // push new data
+    stokBarangRef.push(
+      {
+        nama: namaBarang.value,
+        hargaBeli: parseInt(hargaBeli.value),
+        harga: parseInt(hargaJual.value),
+        stok: parseInt(stok.value),
+      },
+      (error) => {
+        if (error) {
+          alert(error);
+        } else {
+          closeModal();
+          console.log("data saved successfully!");
+        }
       }
-    });
-    console.log(updateStok);
+    );
   };
   // akhir tambah barang
-  const [barangs, setBarangs] = useState(null);
-  const tableRef = useRef(null);
+
   // Edit bararang
-  const [currentNoEdit, setCurrentNoEdit] = useState(null);
-  const edit = (nomor) => {
+  const [currentNoEdit,setCurrentNoEdit]=useState(null)
+  const [currentIdEdit, setCurrentIdEdit] = useState(null);
+  const kategori = useRef(null);
+  const  inputEditBarang =useRef(null)
+  const edit = (id,nomor) => {
     openEditModal();
+    setCurrentIdEdit(id);
     setCurrentNoEdit(nomor);
   };
   const submitEditBarang = (e) => {
     e.preventDefault();
     console.log(updateStok);
-    console.log(currentNoEdit);
-    console.log(typeof inputEditBarangRef.current.value);
-    console.log(inputEditBarangRef.current.value);
-    console.log(kategoriRef.current.value);
-    console.log(typeof inputEditBarangRef.current.value);
+    console.log(kategori);
+    console.log(typeof inputEditBarang.current.value);
+    console.log(inputEditBarang.current.value);
+    console.log(kategori.current.value);
+    console.log(typeof inputEditBarang.current.value);
     if (
-      kategoriRef.current.value === "stok" ||
-      kategoriRef.current.value === "harga" ||
-      kategoriRef.current.value === "hargaBeli"
+      kategori.current.value === "stok" ||
+      kategori.current.value === "harga" ||
+      kategori.current.value === "hargaBeli"
     ) {
-      updateStok[currentNoEdit + "/" + kategoriRef.current.value] = parseInt(
-        inputEditBarangRef.current.value
-      );
+      console.log(parseInt(inputEditBarang.current.value))
+      updateStok[currentIdEdit + "/" + kategori.current.value] = parseInt(
+        inputEditBarang.current.value
+        );
       stokBarangRef.update(updateStok);
       console.log(updateStok);
       alert("Successfully update!");
       closeEditModal();
     }
-    if (inputEditBarangRef.current.value === "") {
+    if (inputEditBarang.current.value === "") {
       alert("Silahkan masukkan data!");
     } else {
-      updateStok[currentNoEdit + "/" + kategoriRef.current.value] =
-        inputEditBarangRef.current.value;
+      updateStok[currentIdEdit + "/" + kategori.current.value] = inputEditBarang.current.value;
       stokBarangRef.update(updateStok);
       console.log(updateStok);
       alert("Successfully update!");
@@ -90,18 +91,20 @@ function Dashboard() {
 
   // awal Remove barang
   const [openRemove, setOpenRemove] = useState(false);
+  const [currentIdRemove, setCurrentIdRemove] = useState(null);
   const [currentNoRemove, setCurrentNoRemove] = useState(null);
   const cancelButtonRef = useRef(null);
-  const removeBarang = (currentNoRemove) => {
-    setCurrentNoRemove(currentNoRemove);
+  const removeBarang = (idRemove,noRemove) => {
+    setCurrentNoRemove(noRemove);
+    setCurrentIdRemove(idRemove)
     setOpenRemove(true);
   };
   const submitRemoveBarang = (e) => {
     e.preventDefault();
-    stokBarangRef.child(currentNoRemove).remove();
-    for (let i = 1; i < barangs.length; i++) {
+    stokBarangRef.child(currentIdRemove).remove();
+    for (let i = 0; i < barangs.length; i++) {
       if (i === currentNoRemove) {
-        stokBarangRef.child(i).remove();
+        stokBarangRef.child(currentIdRemove).remove();
       }
       // if(i>currentNoRemove){
       //   let j=i-1
@@ -109,10 +112,10 @@ function Dashboard() {
       //   updateStok[j+"/id"]=j
       //   stokBarangRef.update(updateStok);
       // }
-      if (i < currentNoRemove) {
-        updateStok[i + "/id"] = uuidv4();
-        stokBarangRef.update(updateStok);
-      }
+      // if (i < currentNoRemove) {
+      //   updateStok[i + "/id"] = i;
+      //   stokBarangRef.update(updateStok);
+      // }
     }
     console.log(barangs);
     setOpenRemove(false);
@@ -143,19 +146,28 @@ function Dashboard() {
       .once("value")
       .then((items) => {
         if (items.exists()) {
-          console.log(items.val());
-          setBarangs(items.val());
-          console.log(tableRef.current);
+          items.forEach((item) => {
+            console.log(item.val());
+            console.log(item.key);
+            barangs.push({
+              id: item.key,
+              nama: item.val().nama,
+              hargaBeli: item.val().hargaBeli,
+              harga: item.val().harga,
+              stok: item.val().stok,
+            });
+          });
         } else {
           console.log("No data available");
         }
+        console.log(barangs);
+        setIsbarangsLoad(true);
       })
       .catch((err) => {
         console.log(err);
         alert(err);
       });
-  }, [tableRef]);
-
+  }, [barangs]);
   return (
     <div className="flex justify-center">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 box-border w-full">
@@ -163,15 +175,17 @@ function Dashboard() {
           <h2 className="px-2 pb-6 pt-10 text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl text-center">
             Dashboard <span className="text-indigo-500">Hartop Gypsum</span>
           </h2>
+          <div className=' flex justify-between my-2'>
+            <h2 className="text-gray-500"><span className="font-medium text-gray-900">User : </span> {currentUser.email}  {currentUser.name}</h2>
           <button
             onClick={() => {
-              ho();
               authh.signOut();
             }}
             className="bg-red-200 hover:bg-red-300 font-bold py-1 px-2 text-red-600 rounded"
           >
             Logout
           </button>
+          </div>
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table
               className="min-w-full divide-y divide-gray-200"
@@ -219,18 +233,18 @@ function Dashboard() {
                     scope="col"
                     className="relative px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-indigo-500"
                   >
-                    <span>Edit</span>
+                    <span className="sr-only">Edit</span>
                   </th>
                 </tr>
               </thead>
 
-              {barangs ? (
+              {isBarangsLoad ? (
                 <tbody className="bg-white divide-y divide-gray-200">
                   {barangs.map((barang, index) => {
                     return (
                       <tr key={barang.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {index}
+                          {index + 1}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                           {barang.id}
@@ -249,7 +263,7 @@ function Dashboard() {
                         </td>
                         <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium flex">
                           <span
-                            onClick={() => edit(index)}
+                            onClick={() => edit(barang.id,index+1)}
                             className="text-gray-400 hover:text-indigo-600 cursor-pointer"
                           >
                             <svg
@@ -267,9 +281,9 @@ function Dashboard() {
                               />
                             </svg>
                           </span>
-                          |
+                          
                           <span
-                            onClick={() => removeBarang(index)}
+                            onClick={() => removeBarang(barang.id,index)}
                             className="text-gray-400 hover:text-red-600 cursor-pointer"
                           >
                             <svg
@@ -536,11 +550,12 @@ function Dashboard() {
                       as="h3"
                       className="text-lg flex font-medium leading-6 text-gray-700"
                     >
-                      Tambah Barang ke-{barangs ? barangs.length : null}
+                      Tambah Barang ke-
+                      {isBarangsLoad ? barangs.length + 1 : null}
                     </Dialog.Title>
                     <div className="mt-10 sm:mt-0">
                       <div className="mt-5 md:mt-3  md:col-span-2">
-                        <form method="POST">
+                        <form method="POST" onSubmit={tambahBarang}>
                           <div className="shadow overflow-hidden sm:rounded-md">
                             <div className="px-4 py-5 bg-white sm:p-6">
                               <div className="col-span-6 sm:col-span-3 mt-3">
@@ -552,8 +567,7 @@ function Dashboard() {
                                 </label>
                                 <input
                                   type="text"
-                                  name="nama_barang"
-                                  ref={namaBarang}
+                                  name="namaBarang"
                                   required
                                   autoComplete="nama-barang"
                                   className="mt-1 border-b-2 border-gray-400  focus:outline-none focus:border-indigo-400 shadow rounded block w-full  sm:text-sm  "
@@ -568,8 +582,7 @@ function Dashboard() {
                                 </label>
                                 <input
                                   type="number"
-                                  name="harga_beli"
-                                  ref={hargaBeli}
+                                  name="hargaBeli"
                                   required
                                   className="mt-1 border-b-2 border-gray-400  focus:outline-none focus:border-indigo-400 shadow rounded block w-full sm:text-sm"
                                 />
@@ -583,8 +596,7 @@ function Dashboard() {
                                 </label>
                                 <input
                                   type="number"
-                                  name="harga_jual"
-                                  ref={hargaJual}
+                                  name="hargaJual"
                                   required
                                   className="mt-1 border-b-2 border-gray-400  focus:outline-none focus:border-indigo-400 shadow rounded block w-full sm:text-sm"
                                 />
@@ -599,7 +611,6 @@ function Dashboard() {
                                 <input
                                   type="number"
                                   name="stok"
-                                  ref={stok}
                                   required
                                   className="mt-1 border-b-2 border-gray-400  focus:outline-none focus:border-indigo-400 shadow rounded block w-full sm:text-sm "
                                 />
@@ -608,7 +619,6 @@ function Dashboard() {
                             <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                               <button
                                 type="submit"
-                                onClick={tambahBarang}
                                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Save
@@ -683,7 +693,7 @@ function Dashboard() {
                       as="h3"
                       className="text-lg flex font-medium leading-6 text-gray-700"
                     >
-                      Edit Barang ID ke-{currentNoEdit}
+                      Edit Barang ke-{currentNoEdit}
                     </Dialog.Title>
                     <div className="mt-10 sm:mt-0">
                       <div className="mt-5 md:mt-3  md:col-span-2">
@@ -693,8 +703,8 @@ function Dashboard() {
                               <div className="col-span-6 sm:col-span-3 flex items-center">
                                 <select
                                   name="kategori"
+                                  ref={kategori}
                                   className="block text-sm font-medium text-gray-700 mr-2 border-2 rounded focus:outline-none border-indigo-400"
-                                  ref={kategoriRef}
                                 >
                                   <option value="nama">Nama Barang</option>
                                   <option value="harga">Harga Jual</option>
@@ -704,8 +714,8 @@ function Dashboard() {
 
                                 <input
                                   type="text"
-                                  name="editBarang"
-                                  ref={inputEditBarangRef}
+                                  name="inputEditBarang"
+                                  ref={inputEditBarang}
                                   required
                                   autoComplete="editBarang"
                                   className="mt-1 border-b-2 border-gray-400  focus:outline-none focus:border-indigo-400 shadow rounded block w-full sm:text-sm"
@@ -811,13 +821,13 @@ function Dashboard() {
                           as="h3"
                           className="text-lg leading-6 font-medium text-gray-900"
                         >
-                          Hapus data barang ke-{currentNoRemove}?
+                          Hapus data barang ke-{currentNoRemove + 1}?
                         </Dialog.Title>
                         <div className="mt-2">
                           <p className="text-sm text-gray-500">
-                            Are you sure want to delete the {currentNoRemove}{" "}
-                            item data? Your data will be permanently removed.
-                            This action cannot be undone.
+                            Are you sure want to delete the{" "}
+                            {currentNoRemove + 1} item data? Your data will be
+                            permanently removed. This action cannot be undone.
                           </p>
                         </div>
                       </div>

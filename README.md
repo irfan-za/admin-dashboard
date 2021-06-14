@@ -1,2 +1,3 @@
-# POS APP by Zahran
-a point of sale ap developed by Zahran.
+# Admin Dashboard created using React & Firebase.
+## How to use
+1. Run npm install to

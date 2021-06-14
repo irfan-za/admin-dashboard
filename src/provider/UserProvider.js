@@ -14,7 +14,9 @@ export const UserProvider = (props) => {
     });
   }, []);
   if (pending) {
-    return <>Loading...</>;
+    return (<div className="w-full h-screen flex justify-center items-center">
+    <h1 className="animate-pulse font-mono text-indigo-700">Loading...</h1>
+    </div>)
   }
 
   return (
