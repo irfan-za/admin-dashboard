@@ -17,5 +17,5 @@
  REACT_APP_MESSAGING_SENDER=xxx
  REACT_APP_APP_ID=xxxx
  ```
-6. Run `npm start` to starting a development server.
-7. Open the browser at http://localhost:3000 to see the webApp.
+9. Run `npm start` to starting a development server.
+10. Open the browser at http://localhost:3000 to see the webApp.
