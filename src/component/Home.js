@@ -18,14 +18,6 @@ function Home() {
             Login
           </Link>
         </div>
-        <div className="ml-3 inline-flex rounded-md shadow">
-          <Link to="/register"
-            href="#"
-            className="inline-flex items-center justify-center w-20 h-11 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-100"
-          >
-            Register
-          </Link>
-        </div>
       </div>
     </div>
   </div>

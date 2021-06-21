@@ -29,49 +29,6 @@ function Login({ history }) {
   if (currentUser) {
     return <Redirect to="/dashboard" />;
   }
-
-  // const linkToDashboardPage = useRef(null);
-  // const emailRef = useRef(null);
-  // const passwordRef = useRef(null);
-
-  // const loginUser = (e) => {
-  //   e.preventDefault();
-  //   buttonRef.current.textContent = "Loading...";
-
-  //   if (emailRef.current || passwordRef.current !== null) {
-  //     const email = emailRef.current.value;
-  //     const password = passwordRef.current.value;
-  //     console.log(email);
-  //     const user = authh.currentUser;
-  //     console.log(user);
-  //     authh.onAuthStateChanged((user) => {
-  //       if (user) {
-  //         console.log(user);
-  //       } else {
-  //         console.log("gagal login");
-  //       }
-  //     });
-  //     authh
-  //       .signInWithEmailAndPassword(email, password)
-  //       .then((userCredential) => {
-  //         // sign In
-  //         buttonRef.current.textContent = "Login";
-  //         const user = userCredential.user;
-  //         sessionStorage.setItem("uid", JSON.stringify(user.uid));
-  //         console.log("usser u id===>" + user.uid);
-  //         console.log(userCredential);
-  //         if (user) {
-  //           linkToDashboardPage.current.click();
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         buttonRef.current.textContent = "Login";
-  //         const errCode = err.code;
-  //         const errMessage = err.message;
-  //         alert(errMessage);
-  //       });
-  //   }
-  // };
   return (
     <div className="min-h-screen flex  items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 ">
       <div className="max-w-md md:relative w-full space-y-8  ">
@@ -126,7 +83,6 @@ function Login({ history }) {
                 Password
               </label>
               <input
-                // ref={passwordRef}
                 id="password"
                 name="password"
                 type="password"
@@ -137,28 +93,10 @@ function Login({ history }) {
               />
             </div>
           </div>
-          {/* <Link
-            to="/dashboard"
-            ref={linkToDashboardPage}
-            // aria-hidden={true}
-            className="hidden"
-          ></Link> */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember_me"
-                name="remember_me"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-            </div>
-          </div>
-
           <div>
             <button
               ref={buttonRef}
               type="submit"
-              // onClick={loginUser}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3"></span>

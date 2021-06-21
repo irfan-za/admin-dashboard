@@ -2,10 +2,11 @@ import { useEffect, useRef, useState, Fragment, useContext } from "react";
 import "../style/buttonplus.css";
 import { Dialog, Transition } from "@headlessui/react";
 import { authh, stokBarangRef } from "../config/firebase/firebase-app";
-import {UserContext} from "../provider/UserProvider"
+import { UserContext } from "../provider/UserProvider";
+import { findAllInRenderedTree } from "react-dom/test-utils";
 
 function Dashboard() {
-  const {currentUser}= useContext(UserContext)
+  const { currentUser } = useContext(UserContext);
   const [barangs, setBarangs] = useState([]);
   const [isBarangsLoad, setIsbarangsLoad] = useState(false);
   const tableRef = useRef(null);
@@ -15,7 +16,6 @@ function Dashboard() {
   const tambahBarang = (e) => {
     e.preventDefault();
     const { namaBarang, hargaBeli, hargaJual, stok } = e.target.elements;
-    console.log(e);
     if (
       namaBarang.value === "" ||
       hargaBeli.value === "" ||
@@ -38,89 +38,88 @@ function Dashboard() {
           alert(error);
         } else {
           closeModal();
-          console.log("data saved successfully!");
         }
       }
     );
   };
-  // akhir tambah barang
 
   // Edit bararang
-  const [currentNoEdit,setCurrentNoEdit]=useState(null)
+  const [currentNoEdit, setCurrentNoEdit] = useState(null);
   const [currentIdEdit, setCurrentIdEdit] = useState(null);
-  const kategori = useRef(null);
-  const  inputEditBarang =useRef(null)
-  const edit = (id,nomor) => {
+  const [inputEditBarang, setInputEditBarang] = useState(null);
+  const [inputEditNamaBarang, setInputEditNamaBarang] = useState(null);
+  const [kategori, setKategori] = useState(null);
+  const inputEditBarangRef = useRef(null);
+  const inputEditNamaBarangRef = useRef(null);
+
+  const edit = (id, nomor) => {
     openEditModal();
     setCurrentIdEdit(id);
     setCurrentNoEdit(nomor);
   };
+  useEffect(() => {
+    console.log("kategori= " + kategori);
+    if (
+      kategori === "stok" ||
+      kategori === "harga" ||
+      kategori === "hargaBeli"
+    ) {
+      inputEditNamaBarangRef.current.classList.add("hidden");
+      inputEditBarangRef.current.classList.remove("hidden");
+    }
+    if (kategori === "nama") {
+      inputEditNamaBarangRef.current.classList.remove("hidden");
+      inputEditBarangRef.current.classList.add("hidden");
+    }
+  }, [kategori]);
   const submitEditBarang = (e) => {
     e.preventDefault();
-    console.log(updateStok);
-    console.log(kategori);
-    console.log(typeof inputEditBarang.current.value);
-    console.log(inputEditBarang.current.value);
-    console.log(kategori.current.value);
-    console.log(typeof inputEditBarang.current.value);
     if (
-      kategori.current.value === "stok" ||
-      kategori.current.value === "harga" ||
-      kategori.current.value === "hargaBeli"
+      kategori === "stok" ||
+      kategori === "harga" ||
+      kategori === "hargaBeli"
     ) {
-      console.log(parseInt(inputEditBarang.current.value))
-      updateStok[currentIdEdit + "/" + kategori.current.value] = parseInt(
-        inputEditBarang.current.value
+      if ( inputEditBarang=== null) {
+        alert("Silahkan masukkan data!");
+      } else {
+        console.log(inputEditBarang);
+        updateStok[currentIdEdit + "/" + kategori] = parseInt(
+          inputEditBarang.value
         );
-      stokBarangRef.update(updateStok);
-      console.log(updateStok);
-      alert("Successfully update!");
-      closeEditModal();
-    }
-    if (inputEditBarang.current.value === "") {
-      alert("Silahkan masukkan data!");
-    } else {
-      updateStok[currentIdEdit + "/" + kategori.current.value] = inputEditBarang.current.value;
-      stokBarangRef.update(updateStok);
-      console.log(updateStok);
-      alert("Successfully update!");
-      closeEditModal();
+        console.log(inputEditBarang.value);
+        stokBarangRef.update(updateStok);
+        console.log(updateStok);
+        alert("Successfully update!");
+        closeEditModal();
+      }
+    } else if (kategori === "nama" || kategori===null) {
+      if ( inputEditNamaBarang === null) {
+        alert("Silahkan masukkan data!");
+      } else {
+        updateStok[currentIdEdit + "/" + kategori] = inputEditNamaBarang.value;
+        stokBarangRef.update(updateStok);
+        console.log(updateStok);
+        alert("Successfully update!");
+        closeEditModal();
+      }
     }
   };
-  // akhir edit barang
 
   // awal Remove barang
   const [openRemove, setOpenRemove] = useState(false);
   const [currentIdRemove, setCurrentIdRemove] = useState(null);
   const [currentNoRemove, setCurrentNoRemove] = useState(null);
   const cancelButtonRef = useRef(null);
-  const removeBarang = (idRemove,noRemove) => {
+  const removeBarang = (idRemove, noRemove) => {
     setCurrentNoRemove(noRemove);
-    setCurrentIdRemove(idRemove)
+    setCurrentIdRemove(idRemove);
     setOpenRemove(true);
   };
   const submitRemoveBarang = (e) => {
     e.preventDefault();
     stokBarangRef.child(currentIdRemove).remove();
-    for (let i = 0; i < barangs.length; i++) {
-      if (i === currentNoRemove) {
-        stokBarangRef.child(currentIdRemove).remove();
-      }
-      // if(i>currentNoRemove){
-      //   let j=i-1
-      //   console.log(j)
-      //   updateStok[j+"/id"]=j
-      //   stokBarangRef.update(updateStok);
-      // }
-      // if (i < currentNoRemove) {
-      //   updateStok[i + "/id"] = i;
-      //   stokBarangRef.update(updateStok);
-      // }
-    }
-    console.log(barangs);
     setOpenRemove(false);
   };
-  // akhir remove barang
 
   // modal togle
   const [isOpen, setIsOpen] = useState(false);
@@ -141,14 +140,11 @@ function Dashboard() {
   }
   // get data from database
   useEffect(() => {
-    console.log(stokBarangRef.child(1));
     stokBarangRef
       .once("value")
       .then((items) => {
         if (items.exists()) {
           items.forEach((item) => {
-            console.log(item.val());
-            console.log(item.key);
             barangs.push({
               id: item.key,
               nama: item.val().nama,
@@ -158,13 +154,11 @@ function Dashboard() {
             });
           });
         } else {
-          console.log("No data available");
+          findAllInRenderedTree("No data available");
         }
-        console.log(barangs);
         setIsbarangsLoad(true);
       })
       .catch((err) => {
-        console.log(err);
         alert(err);
       });
   }, [barangs]);
@@ -173,18 +167,21 @@ function Dashboard() {
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 box-border w-full">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8 pb-20">
           <h2 className="px-2 pb-6 pt-10 text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl text-center">
-            Dashboard <span className="text-indigo-500">Hartop Gypsum</span>
+            Dashboard <span className="text-indigo-600">Hartop Gypsum</span>
           </h2>
-          <div className=' flex justify-between my-2'>
-            <h2 className="text-gray-500"><span className="font-medium text-gray-900">User : </span> {currentUser.email}  {currentUser.name}</h2>
-          <button
-            onClick={() => {
-              authh.signOut();
-            }}
-            className="bg-red-200 hover:bg-red-300 font-bold py-1 px-2 text-red-600 rounded"
-          >
-            Logout
-          </button>
+          <div className=" flex justify-between my-2">
+            <h2 className="text-gray-500">
+              <span className="font-medium text-gray-900">User : </span>{" "}
+              {currentUser.email} {currentUser.name}
+            </h2>
+            <button
+              onClick={() => {
+                authh.signOut();
+              }}
+              className="bg-red-200 hover:bg-red-300 font-bold py-1 px-2 text-red-600 rounded"
+            >
+              Logout
+            </button>
           </div>
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table
@@ -263,7 +260,7 @@ function Dashboard() {
                         </td>
                         <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium flex">
                           <span
-                            onClick={() => edit(barang.id,index+1)}
+                            onClick={() => edit(barang.id, index + 1)}
                             className="text-gray-400 hover:text-indigo-600 cursor-pointer"
                           >
                             <svg
@@ -281,9 +278,9 @@ function Dashboard() {
                               />
                             </svg>
                           </span>
-                          
+
                           <span
-                            onClick={() => removeBarang(barang.id,index)}
+                            onClick={() => removeBarang(barang.id, index)}
                             className="text-gray-400 hover:text-red-600 cursor-pointer"
                           >
                             <svg
@@ -616,7 +613,7 @@ function Dashboard() {
                                 />
                               </div>
                             </div>
-                            <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                            <div className="px-4 py-3 text-right sm:px-6">
                               <button
                                 type="submit"
                                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -703,7 +700,7 @@ function Dashboard() {
                               <div className="col-span-6 sm:col-span-3 flex items-center">
                                 <select
                                   name="kategori"
-                                  ref={kategori}
+                                  onChange={(e) => setKategori(e.target.value)}
                                   className="block text-sm font-medium text-gray-700 mr-2 border-2 rounded focus:outline-none border-indigo-400"
                                 >
                                   <option value="nama">Nama Barang</option>
@@ -714,11 +711,23 @@ function Dashboard() {
 
                                 <input
                                   type="text"
-                                  name="inputEditBarang"
-                                  ref={inputEditBarang}
+                                  name="inputEditNamaBarang"
+                                  ref={inputEditNamaBarangRef}
+                                  onChange={(e) =>
+                                    setInputEditNamaBarang(e.target)
+                                  }
                                   required
-                                  autoComplete="editBarang"
+                                  autoComplete="editNamaBarang"
                                   className="mt-1 border-b-2 border-gray-400  focus:outline-none focus:border-indigo-400 shadow rounded block w-full sm:text-sm"
+                                />
+                                <input
+                                  type="number"
+                                  name="inputEditBarang"
+                                  ref={inputEditBarangRef}
+                                  onChange={(e) => setInputEditBarang(e.target)}
+                                  required
+                                  autoComplete="inputeditBarang"
+                                  className="mt-1 border-b-2 border-gray-400  focus:outline-none focus:border-indigo-400 shadow rounded block w-full sm:text-sm hidden"
                                 />
                               </div>
                             </div>
