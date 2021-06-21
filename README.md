@@ -5,8 +5,9 @@
 3. click `add project` button, input your project name and then click `create project`
 4. click website icon and register your app
 5. open authentication menu on firebase console, on the sign-In method enable email/password
-6. 
-7. Add the `.env` file at root of your application folder. Write this code on your `.env` file and fill it with your firebase config.
+6. open Realtime Database menu, then create database'
+7. On the data menu add child with key `stokBarang` and input the value with your first data.
+8. Add the `.env` file at root of your application folder. Write this code on your `.env` file and fill it with your firebase config.
  ```
  REACT_APP_API_KEY=xxxxxx
  REACT_APP_AUTH_DOMAIN=xxxxxx
