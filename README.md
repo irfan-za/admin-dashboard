@@ -1,4 +1,7 @@
 # Admin Dashboard created using React & Firebase.
+
+###You can see the demo [here.](https://irfan-za.github.io/admin-dashboard)
+
 ## How to use
 1. Run `npm install` on your terminal to downloading all the dependencies
 2. Open the firebase website at https://console.firebase.google.com/
