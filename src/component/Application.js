@@ -4,7 +4,6 @@ import UserContext from "../provider/UserProvider"
 import Home from "./Home"
 import Login from "./Login"
 import Dashboard from "./Dashboard"
-import Register from './Register'
 
 function Application() {
   const user = useContext(UserContext);
@@ -21,11 +20,6 @@ function Application() {
         <Switch>
           <Route path="/login">
             <Login/>
-          </Route>
-        </Switch>
-        <Switch>
-          <Route path="/register">
-            <Register/>
           </Route>
         </Switch>
       </div>
