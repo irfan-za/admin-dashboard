@@ -15,7 +15,7 @@ function Login({ history }) {
         await authh
           .signInWithEmailAndPassword(email.value, password.value)
           .then(() => (buttonRef.current.textContent = "Login"));
-        history.push("/admin-dashboard/dashboard");
+        history.push("/dashboard");
       } catch (error) {
         buttonRef.current.textContent = "Login";
         alert(error);
@@ -27,7 +27,7 @@ function Login({ history }) {
   const { currentUser } = useContext(UserContext);
 
   if (currentUser) {
-    return <Redirect to="/admin-dashboard/dashboard" />;
+    return <Redirect to="/dashboard" />;
   }
   return (
     <div className="min-h-screen flex  items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 ">
