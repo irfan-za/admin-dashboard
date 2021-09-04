@@ -11,7 +11,7 @@ function Home() {
       </h2>
       <div className="mt-8 flex lg:mt-7 lg:flex-shrink-0">
         <div className="inline-flex rounded-md shadow">
-          <Link to="/admin-dashboard/login"
+          <Link to="/login"
             href="#"
             className="inline-flex items-center justify-center w-20 h-11 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-800 "
           >
