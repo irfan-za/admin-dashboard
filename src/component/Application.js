@@ -7,7 +7,6 @@ import Dashboard from "./Dashboard"
 
 function Application() {
   const user = useContext(UserContext);
-  console.log(user)
   return (
     user?<Dashboard />:
     <Router>
