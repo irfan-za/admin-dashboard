@@ -58,7 +58,6 @@ function Dashboard() {
     setCurrentNoEdit(nomor);
   };
   useEffect(() => {
-    console.log("kategori= " + kategori);
     if (
       kategori === "stok" ||
       kategori === "harga" ||
@@ -82,13 +81,10 @@ function Dashboard() {
       if ( inputEditBarang=== null) {
         alert("Silahkan masukkan data!");
       } else {
-        console.log(inputEditBarang);
         updateStok[currentIdEdit + "/" + kategori] = parseInt(
           inputEditBarang.value
         );
-        console.log(inputEditBarang.value);
         stokBarangRef.update(updateStok);
-        console.log(updateStok);
         alert("Successfully update!");
         closeEditModal();
       }
@@ -98,7 +94,6 @@ function Dashboard() {
       } else {
         updateStok[currentIdEdit + "/" + kategori] = inputEditNamaBarang.value;
         stokBarangRef.update(updateStok);
-        console.log(updateStok);
         alert("Successfully update!");
         closeEditModal();
       }
