@@ -5,10 +5,7 @@ function Home() {
   return (
     <div className="bg-gray-500 h-screen">
     <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:h-screen lg:flex lg:flex-col lg:items-center lg:justify-center  transform lg:-translate-y-10">
-      <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-        <span className="block font-bold text-2xl">Dashboard Admin</span>
-        <span className="block text-indigo-600">Hartop Gypsum</span>
-      </h2>
+      <h2 className="text-3xl font-extrabold text-indigo-600 sm:text-4xl">Dashboard Admin</h2>
       <div className="mt-8 flex lg:mt-7 lg:flex-shrink-0">
         <div className="inline-flex rounded-md shadow">
           <Link to="/login"
