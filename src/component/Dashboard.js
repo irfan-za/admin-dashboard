@@ -162,7 +162,7 @@ function Dashboard() {
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 box-border w-full">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8 pb-20">
           <h2 className="px-2 pb-6 pt-10 text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl text-center">
-            Dashboard <span className="text-indigo-600">Hartop Gypsum</span>
+            Dashboard <span className="text-indigo-600">Admin</span>
           </h2>
           <div className=" flex justify-between my-2">
             <h2 className="text-gray-500">
