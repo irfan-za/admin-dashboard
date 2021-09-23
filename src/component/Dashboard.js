@@ -85,7 +85,6 @@ function Dashboard() {
           inputEditBarang.value
         );
         stokBarangRef.update(updateStok);
-        alert("Successfully update!");
         closeEditModal();
       }
     } else if (kategori === "nama" || kategori===null) {
